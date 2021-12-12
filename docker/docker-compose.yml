@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+
+  scalacassandraupdatestreaming:
+    image: scalacassandraupdatestreaming:<localBuild>
+
+  cassandra:
+    image: cassandra:3.11.9
+    ports:
+      - 9042:9042
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
