@@ -3,7 +3,7 @@
 Codebase exploring how to read the contents of a table in Cassandra, and then update records based on a simple condition.
 
 This example is based off of the Baeldung "videos" example linked below. My extension of this is simply to read in the 
-contents of the videos table in Cassandra, convert the video titles to lowercase and write them back to the same table (upsert).
+contents of the `video` table in Cassandra, convert the video titles to lowercase and write them back to the same table.
 
 ### Instructions
 
