@@ -19,7 +19,10 @@ object Main extends App with AlpakkaCassandra with Logging {
       logger.info("Cassandra ready.")
   }
 
-  def transformRowToVideo(row: Row): Video =
+  private val selectStmt =
+    SimpleStatement.newInstance(s"SELECT * FROM ${appConfig.cassandra.keyspace}.video").setPageSize(20)
+
+  private val transformRowToVideo: Row => Video = (row: Row) =>
     Video(
       row.getString("userid"),
       row.getString("videoid"),
@@ -27,18 +30,16 @@ object Main extends App with AlpakkaCassandra with Logging {
       row.getInstant("creationdate")
     )
 
-  val selectStmt = SimpleStatement.newInstance(s"SELECT * FROM ${appConfig.cassandra.keyspace}.video").setPageSize(20)
+  private val convertTitleToLowercase: Video => Video = (video: Video) =>
+    video.copy(
+      title = video.title.toLowerCase
+    )
 
-  val alpakkaInsertFlow: Flow[Video, Video, NotUsed] = CassandraFlow.create(
+  private val alpakkaInsertFlow: Flow[Video, Video, NotUsed] = CassandraFlow.create(
     CassandraWriteSettings.defaults,
     s"INSERT INTO ${appConfig.cassandra.keyspace}.video(userid, videoid, title, creationdate) VALUES(?, ?, ?, ?)",
     insertStatementBinder
   )
-
-  def convertTitleToLowercase(video: Video): Video =
-    video.copy(
-      title = video.title.toLowerCase
-    )
 
   CassandraSource(selectStmt)
     .via(Flow[Row].map(transformRowToVideo))
