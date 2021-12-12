@@ -12,3 +12,4 @@ contents of the videos table in Cassandra, convert the video titles to lowercase
 * https://doc.akka.io/docs/alpakka/current/cassandra.html
 * https://doc.akka.io/docs/akka/current/stream/stream-cookbook.html
 * https://blog.knoldus.com/streaming-data-from-cassandra-using-alpakka/
+* https://blog.colinbreck.com/maximizing-throughput-for-akka-streams/

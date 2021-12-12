@@ -41,8 +41,9 @@ object Main extends App with AlpakkaCassandra with Logging {
     )
 
   CassandraSource(selectStmt)
-    .map(transformRowToVideo)
-    .map(convertTitleToLowercase)
+    .via(Flow[Row].map(transformRowToVideo))
+    .async
+    .via(Flow[Video].map(convertTitleToLowercase))
     .via(alpakkaInsertFlow)
     .runWith(Sink.foreach(println))
 }
